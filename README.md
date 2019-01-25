@@ -1,4 +1,4 @@
-# Function for converting text to PDF
+# Event driven function for converting text to PDF
 
 This event driven function converts a text file to PDF. Once you drop a `text` file into an Oracle Cloud Infrastructure Object Storage Bucket and configure the appropriate trigger rules, the function will convert it into PDF and stores the converted file in the same bucket (with a `.pdf` extension)
 
