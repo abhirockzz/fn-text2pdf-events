@@ -1,0 +1,10 @@
+{
+  "actions": [
+    {
+      "actionType": "FAAS",
+      "description": "Invoke PDF conversion when .txt file is uploaded to storage bucket",
+      "isEnabled": true,
+      "functionId": "ocid1.fnfunc.oc1.phx.aaaaaaaaacagbodrt6ckvgs4627uro2e7nqa63d3xfxliu4e7i5eduhvryva"
+    }
+  ]
+}
