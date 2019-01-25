@@ -1,6 +1,6 @@
 # Event driven function for converting text to PDF
 
-This event driven function converts a text file to PDF. Once you drop a `text` file into an Oracle Cloud Infrastructure Object Storage Bucket and configure the appropriate trigger rules, the function will convert it into PDF and stores the converted file in the same bucket (with a `.pdf` extension)
+This event driven function converts a text file to PDF. Once you drop a `text` file into an Oracle Cloud Infrastructure Object Storage Bucket and configure the appropriate trigger rules, the function will convert it into PDF and store the converted file in the same bucket (with a `.pdf` extension)
 
 - It's written in Go and uses [gofpdf](https://github.com/jung-kurt/gofpdf) for text to PDF conversion 
 - Uses the [OCI Go SDK](https://github.com/oracle/oci-go-sdk) to execute Object Storage read and write operations
@@ -10,7 +10,7 @@ This event driven function converts a text file to PDF. Once you drop a `text` f
 
 - Start by cloning this repository
 - [Create Oracle Cloud Infrastructure Object Storage bucket](https://docs.cloud.oracle.com/iaas/Content/Object/Tasks/managingbuckets.htm#usingconsole)
-- Collect the following information for you OCI tenancy (you'll need these in subsequent steps) - Tenancy OCID, User OCID of a user in the tenancy, OCI private key, OCI public key passphrase, OCI region, Object Storage namespace and name of the bucket you just created
+- Collect the following information for you OCI tenancy (you'll need these in subsequent steps) - Tenancy OCID, User OCID of a user in the tenancy, OCI private key, OCI public key passphrase, OCI region
 - Copy your OCI private key to folder. If you don't already have one, [please follow the documentation](https://docs.cloud.oracle.com/iaas/Content/API/Concepts/apisigningkey.htm#How)
 
 
@@ -42,9 +42,11 @@ e.g.
 
 ### Before that...
 
-... find the function OCID and replace it in `actions.json` file
+... find the function OCID (use the command below) and replace it in `actions.json` file
 
 `fn inspect fn text2pdf convert | jq '.id' | sed -e 's/^"//' -e 's/"$//'`
+
+Go ahead and create the rule... 
 
 `oci --profile <oci-config-profile-name> cloud-events rule create --display-name <display-name> --is-enabled true --condition '{"eventType":"com.oraclecloud.objectstorage.object.create", "data": {"bucketName":"<bucket-name>"}}' --compartment-id <compartment-ocid> --actions file://<filename>.json`
 
@@ -57,6 +59,6 @@ e.g.
 
 ## Test
 
-A sample text file (`lorem.txt`) has been provided to test the function. Upload file to your object storage bucket and wait for the function to be triggered.
+A sample text file (`lorem.txt`) has been provided to test the function. Upload this file to your object storage bucket and wait for the function to be triggered.
 
 If successful, you should see a PDF (`lorem.pdf`) in your Object Storage bucket
