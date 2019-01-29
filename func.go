@@ -42,7 +42,7 @@ func text2PDF(ctx context.Context, in io.Reader, out io.Writer) {
 	bucketName := evt.Data.BucketName
 
 	log.Println("Storage Bucket namespace ", namespace)
-	log.Println("Storage Bucket name ", bucketName)
+	log.Println("Input storage Bucket name ", bucketName)
 
 	fnCtx := fdk.GetContext(ctx)
 
@@ -53,6 +53,7 @@ func text2PDF(ctx context.Context, in io.Reader, out io.Writer) {
 	privateKeyName := fnCtx.Config()["PRIVATE_KEY_NAME"]
 	privateKeyLocation := privateKeyFolder + "/" + privateKeyName
 	passphrase := fnCtx.Config()["PASSPHRASE"]
+	outputBucket := fnCtx.Config()["OUTPUT_BUCKET"]
 
 	log.Println("TENANT_OCID ", tenancy)
 	log.Println("USER_OCID ", user)
@@ -60,6 +61,7 @@ func text2PDF(ctx context.Context, in io.Reader, out io.Writer) {
 	log.Println("FINGERPRINT ", fingerprint)
 	log.Println("PRIVATE_KEY_NAME ", privateKeyName)
 	log.Println("PRIVATE_KEY_LOCATION ", privateKeyLocation)
+	log.Println("OUTPUT_BUCKET ", outputBucket)
 
 	privateKey, err := ioutil.ReadFile(privateKeyLocation)
 	if err == nil {
@@ -136,11 +138,11 @@ func text2PDF(ctx context.Context, in io.Reader, out io.Writer) {
 	info, err := file.Stat()
 	//log.Println("PDF File size -- ", info.Size())
 
-	putReq := objectstorage.PutObjectRequest{ContentLength: common.Int64(info.Size()), PutObjectBody: file, NamespaceName: common.String(namespace), BucketName: common.String(bucketName), ObjectName: common.String(opFileName)}
+	putReq := objectstorage.PutObjectRequest{ContentLength: common.Int64(info.Size()), PutObjectBody: file, NamespaceName: common.String(namespace), BucketName: common.String(outputBucket), ObjectName: common.String(opFileName)}
 	_, err = osclient.PutObject(context.Background(), putReq)
 
 	if err == nil {
-		msg := "PDF " + opFileName + " written to storage bucket - " + bucketName
+		msg := "PDF " + opFileName + " written to storage bucket - " + outputBucket
 		log.Println(msg)
 		out.Write([]byte(msg))
 	} else {
