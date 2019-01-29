@@ -50,7 +50,7 @@ Go ahead and create the rule...
 
 `oci --profile <oci-config-profile-name> cloud-events rule create --display-name <display-name> --is-enabled true --condition '{"eventType":"com.oraclecloud.objectstorage.object.create", "data": {"bucketName":"<bucket-name>"}}' --compartment-id <compartment-ocid> --actions file://<filename>.json`
 
-Replace `<bucket-name>` with the Object Storage bucket name where you will upload the text file
+Replace `<bucket-name>` with the (input) Object Storage bucket name where you will upload the text file
 
 e.g.
 
@@ -61,4 +61,4 @@ e.g.
 
 A sample text file (`lorem.txt`) has been provided to test the function. Upload this file to your object storage bucket and wait for the function to be triggered.
 
-If successful, you should see a PDF (`lorem.pdf`) in your Object Storage bucket
+If successful, you should see a PDF (`lorem.pdf`) in the **output** Object Storage bucket spoecified by the user
