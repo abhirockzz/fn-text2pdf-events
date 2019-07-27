@@ -9,6 +9,7 @@ import (
 	"log"
 	"os"
 	"strings"
+	"time"
 
 	fdk "github.com/fnproject/fdk-go"
 	"github.com/jung-kurt/gofpdf"
@@ -29,7 +30,7 @@ func text2PDF(ctx context.Context, in io.Reader, out io.Writer) {
 	log.Println("Got OCI event", evt)
 	log.Println("Got Casper details", evt.Data)
 
-	fileName := evt.Data.ObjectDisplayName
+	fileName := evt.Data.ResourceName
 	log.Println("File name", fileName)
 	extension := strings.Split(fileName, ".")[1]
 
@@ -38,8 +39,8 @@ func text2PDF(ctx context.Context, in io.Reader, out io.Writer) {
 		return
 	}
 
-	namespace := evt.Data.Namespace
-	bucketName := evt.Data.BucketName
+	namespace := evt.Data.AdditionalDetails.Namespace
+	bucketName := evt.Data.AdditionalDetails.BucketName
 
 	log.Println("Storage Bucket namespace ", namespace)
 	log.Println("Input storage Bucket name ", bucketName)
@@ -171,33 +172,39 @@ func (response FailedResponse) toString() string {
 	return response.Message + " due to " + response.Error
 }
 
-//OCIEvent ...
 type OCIEvent struct {
-	CloudEventsVersion string `json:"cloudEventsVersion"`
-	EventID            string `json:"eventID"`
-	EventType          string `json:"eventType"`
-	Source             string `json:"source"`
-	EventTypeVersion   string `json:"eventTypeVersion"`
-	EventTime          string `json:"eventTime"`
-	SchemaURL          string `json:"schemaURL"`
-	ContentType        string `json:"contentType"`
-	Extensions         `json:"extensions"`
-	Data               Data `json:"data"`
+	CloudEventsVersion string      `json:"cloudEventsVersion"`
+	EventID            string      `json:"eventID"`
+	EventType          string      `json:"eventType"`
+	Source             string      `json:"source"`
+	EventTypeVersion   string      `json:"eventTypeVersion"`
+	EventTime          time.Time   `json:"eventTime"`
+	SchemaURL          interface{} `json:"schemaURL"`
+	ContentType        string      `json:"contentType"`
+	Extensions         Extensions  `json:"extensions"`
+	Data               Data        `json:"data"`
 }
-
-//Extensions - "extension" attribute in events JSON payload
 type Extensions struct {
-	CompartmentId string `json:"compartmentId"`
+	CompartmentID string `json:"compartmentId"`
 }
-
-//Data - represents Casper data
+type FreeFormTags struct {
+}
+type DefinedTags struct {
+}
+type AdditionalDetails struct {
+	ETag          string      `json:"eTag"`
+	Namespace     string      `json:"namespace"`
+	ArchieveState interface{} `json:"archieveState"`
+	BucketName    string      `json:"bucketName"`
+	BucketID      string      `json:"bucketId"`
+}
 type Data struct {
-	Namespace          string `json:"namespace"`
-	ObjectDisplayName  string `json:"displayName"`
-	ETag               string `json:"eTag"`
-	BucketID           string `json:"bucketId"`
-	BucketName         string `json:"bucketName"`
-	BucketFreeFormTags string `json:"bucketFreeformTags"`
-	BucketDefinedTags  string `json:"bucketDefinedTags"`
-	ArchivalState      string `json:"archivalState"`
+	CompartmentID      string            `json:"compartmentId"`
+	CompartmentName    string            `json:"compartmentName"`
+	ResourceName       string            `json:"resourceName"`
+	ResourceID         string            `json:"resourceId"`
+	AvailabilityDomain string            `json:"availabilityDomain"`
+	FreeFormTags       FreeFormTags      `json:"freeFormTags"`
+	DefinedTags        DefinedTags       `json:"definedTags"`
+	AdditionalDetails  AdditionalDetails `json:"additionalDetails"`
 }

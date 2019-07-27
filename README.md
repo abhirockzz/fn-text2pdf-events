@@ -44,7 +44,7 @@ e.g.
 
 ... find the function OCID (use the command below) and replace it in `actions.json` file
 
-`fn inspect fn text2pdf convert | jq '.id' | sed -e 's/^"//' -e 's/"$//'`
+`fn inspect fn text2pdf convert2pdf | jq '.id' | sed -e 's/^"//' -e 's/"$//'`
 
 Go ahead and create the rule... 
 
@@ -61,4 +61,4 @@ e.g.
 
 A sample text file (`lorem.txt`) has been provided to test the function. Upload this file to your object storage bucket and wait for the function to be triggered.
 
-If successful, you should see a PDF (`lorem.pdf`) in the **output** Object Storage bucket spoecified by the user
+If successful, you should see a PDF (`lorem.pdf`) in the **output** Object Storage bucket specified by the user
